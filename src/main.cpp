@@ -1,5 +1,8 @@
 #include "includes.h"
 #include "hijacker.h"
+#include "logger.hpp"
+
+using namespace TB;
 
 #pragma region MainGlobals
 const char* m_win32ProcessName = "notepad++.exe";

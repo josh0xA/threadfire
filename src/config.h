@@ -11,6 +11,8 @@
 
 #define NTVERSION_VISTA 6
 
+
+
 typedef enum _DBG_STATE_BOUND
 {
 	/* universal debugging variable*/
