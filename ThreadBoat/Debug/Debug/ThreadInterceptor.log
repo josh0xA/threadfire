@@ -1,0 +1,4 @@
+﻿  hijacker.cpp
+c:\users\joshs\source\repos\threadinterceptor\threadinterceptor\hijacker.cpp(18): warning C4102: 'start': unreferenced label
+c:\users\joshs\source\repos\threadinterceptor\threadinterceptor\hijacker.cpp(43): warning C4715: 'System::returnVersionState': not all control paths return a value
+  ThreadInterceptor.vcxproj -> C:\Users\joshs\source\repos\ThreadInterceptor\Debug\ThreadInterceptor.exe
