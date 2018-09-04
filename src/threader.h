@@ -7,6 +7,8 @@
 #include "config.h"
 #include "hijacker.h"
 
+using namespace Hijacker;
+
 class Threader : public Interceptor {
 private:
 	THREADENTRY32 m_threadEntry32;

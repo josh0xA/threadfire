@@ -3,6 +3,7 @@
 #define __LOGGER_HPP
 
 #include "includes.h"
+#include "config.h"
 
 namespace TB {
 
@@ -13,7 +14,7 @@ namespace TB {
 
 		explicit DBGLogger(const char* m_threadBoatVersion, const char* m_fileName)
 			: m_warningCount(0U),
-			  m_errorCount(0U)
+			m_errorCount(0U)
 		{
 			m_logFile.open(m_fileName);
 
@@ -59,10 +60,9 @@ namespace TB {
 			return m_logger;
 		}
 
-		friend DBGLogger &operator << (DBGLogger &m_logger, DWORD m_dwOpt)
+		friend DBGLogger &operator << (DBGLogger &m_logger, DWORD dwOpt)
 		{
-			m_logger.m_logFile << m_dwOpt << std::endl;
-			return m_logger;
+			m_logger.m_logFile << dwOpt << std::endl;
 		}
 
 		DBGLogger(const DBGLogger&) = delete;
@@ -74,6 +74,9 @@ namespace TB {
 		unsigned int m_errorCount;
 
 	};
+
 }
+
+
 
 #endif 

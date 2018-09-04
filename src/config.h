@@ -6,12 +6,10 @@
 #include "includes.h"
 
 #define DBG_SUCCESS_ON_RETURN_VALUE(s_val) ((s_val) == DBG_SUCCESS_STATE)     /* FOR RETURNING A SUCCESS CODE {0} */
-#define DBG_ERROR_ON_RETURN_VALUE(s_val) (DBG_SUCCESS_STATE(s_val) == FALSE) /* FOR RETURNING AN ERROR CODE {-1, ...} */
+#define DBG_ERROR_ON_RETURN_VALUE(s_val) (DBG_SUCCESS_STATE(s_val) == FALSE)) /* FOR RETURNING AN ERROR CODE {-1, ...} */
 #define DBG_SET_VALUE(s_val, kVal) ((s_val) = (kVal))
 
 #define NTVERSION_VISTA 6
-
-
 
 typedef enum _DBG_STATE_BOUND
 {
@@ -49,9 +47,8 @@ typedef enum _DBG_STATE_BOUND
 	DBG_WRITE_SHELLCODE_TO_THREAD_ADDR_FATAL,
 
 	/* for handling exceptions within the CreateThread address space */
-	DBG_WRITE_CREATE_THREAD_ADDR_FATAL
+	DBG_WRITE_CREATE_THREAD_ADDR_FATAL,
 
 } DBG_STATE_BOUND, *P_DBG_STATE_BOUND;
-
 
 #endif 
