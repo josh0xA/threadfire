@@ -10,7 +10,7 @@ allowing us to write shellcode to a thread.
 ![alt text](https://www.endgame.com/sites/default/files/threadexecution_.gif)
 
 ## Usage
-```
+```cpp
 int main()
 {
 	System sys;
