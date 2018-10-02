@@ -9,6 +9,30 @@ allowing us to write shellcode to a thread.
 ### Credits to Engame for Example GIF
 ![alt text](https://www.endgame.com/sites/default/files/threadexecution_.gif)
 
+## Usage
+```
+int main()
+{
+	System sys;
+	Interceptor incp;
+	Exception exp;
+
+	sys.returnVersionState();
+	if (sys.returnPrivilegeEscalationState())
+	{
+		std::cout << "Token Privileges Adjusted\n";
+	}
+	
+	if (DWORD m_procId = incp.FindWin32ProcessId((PCHAR)m_win32ProcessName))
+	{
+		incp.ExecuteWin32Shellcode(m_procId);
+	}
+
+	system("PAUSE");
+	return 0;
+}
+```
+
 ## Environment
 - Windows Vista+ 
 - Visual C++
