@@ -33,7 +33,7 @@ int main()
 }
 ```
 ## For Further Information On Thread Execution Hijacking 
-#### Please Read Below
+#### Click On The Link Below
 https://capec.mitre.org/data/definitions/30.html
 
 ## Environment
