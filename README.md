@@ -46,3 +46,6 @@ https://capec.mitre.org/data/definitions/30.html
 
 - ntdll.dll
 
+## Ethical Notice
+This code was simply written to demonstrate an overlooked method to inject shellcode or a DLL into a Win32 program. This code is not to be used for malicous purposes. The author, Josh Schiavone, is not liable for misuse of this software. May God bless you all.
+
