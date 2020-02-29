@@ -7,7 +7,7 @@ With Thread hijacking, it allows the hijacker.exe program to susepend a thread w
 allowing us to write shellcode to that target thread, and later be executed (via; WriteProcessMemory(), SetThreadContext(), ResumeThread(), CreateThread()).
 
 ### Credits to Endgame for Example GIF
-![alt text](https://www.endgame.com/sites/default/files/threadexecution_.gif)
+![alt text](https://1.bp.blogspot.com/-pQCXPk6NBB8/XZU5iLWXOFI/AAAAAAAAQf4/2YjvCImtlqAqyhPKL6_ea1GnXJYNiSIwACNcBGAsYHQ/s640/ThreadBoat_1.gif)
 
 ## Usage
 ```cpp
