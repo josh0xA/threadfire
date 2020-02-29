@@ -32,6 +32,9 @@ int main()
 	return 0;
 }
 ```
+## For Further Information On Thread Execution Hijacking 
+#### Please Read Below
+https://capec.mitre.org/data/definitions/30.html
 
 ## Environment
 - Windows Vista+ 
@@ -42,3 +45,4 @@ int main()
   - kernel32.dll
 
 - ntdll.dll
+
