@@ -1,3 +1,12 @@
+/* Copyright (C) 2020 Josh Schiavone - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license, which unfortunately won't be
+ * written for another century.
+ *
+ * You should have received a copy of the MIT license with
+ * this file. If not, visit : https://opensource.org/licenses/MIT
+ */
+
 #include "threader.h"
 
 
@@ -12,13 +21,13 @@ DWORD Threader::FindThreadWithinWin32Process(DWORD m_threaderProcessId)
 		DBG_SET_VALUE(dbgStatus, DBG_THREADER_STATE_FATAL);
 		throw std::runtime_error("DBG_THREADER_STATE_FATAL");
 	}
-	
+
 	if (!Thread32First(m_threaderSnapshot, &m_threadEntry32))
 	{
 		DBG_SET_VALUE(dbgStatus, DBG_THREADER_STATE_FATAL);
-		throw std::runtime_error("DBG_THREADER_STATE_FATAL");	
+		throw std::runtime_error("DBG_THREADER_STATE_FATAL");
 	}
-	
+
 	while (Thread32Next(m_threaderSnapshot, &m_threadEntry32))
 	{
 		if (m_threadEntry32.th32OwnerProcessID == m_threaderProcessId)

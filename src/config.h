@@ -1,3 +1,12 @@
+/* Copyright (C) 2020 Josh Schiavone - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license, which unfortunately won't be
+ * written for another century.
+ *
+ * You should have received a copy of the MIT license with
+ * this file. If not, visit : https://opensource.org/licenses/MIT
+ */
+
 #pragma once
 
 #ifndef __CONFIG_H
@@ -49,6 +58,6 @@ typedef enum _DBG_STATE_BOUND
 	/* for handling exceptions within the CreateThread address space */
 	DBG_WRITE_CREATE_THREAD_ADDR_FATAL,
 
-} DBG_STATE_BOUND, *P_DBG_STATE_BOUND;
+} DBG_STATE_BOUND, * P_DBG_STATE_BOUND;
 
 #endif 

@@ -1,3 +1,12 @@
+/* Copyright (C) 2020 Josh Schiavone - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license, which unfortunately won't be
+ * written for another century.
+ *
+ * You should have received a copy of the MIT license with
+ * this file. If not, visit : https://opensource.org/licenses/MIT
+ */
+
 #pragma once
 
 #ifndef __HIJACKER_H
@@ -16,7 +25,7 @@ namespace Hijacker {
 		LPVOID m_lpShellcode;
 		LPVOID m_lpCreateThreadAddr;
 		// adding more shit...
-	} SHELLCODE_INFO, *PSHELLCODE_INFO;
+	} SHELLCODE_INFO, * PSHELLCODE_INFO;
 
 	class System {
 
