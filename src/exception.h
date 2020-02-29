@@ -1,9 +1,3 @@
-#pragma once
-#ifndef __EXCEPTION_H
-#define __EXCEPTION_H
-
-#include "logger.hpp"
-
 /* Copyright (C) 2020 Josh Schiavone - All Rights Reserved
  * You may use, distribute and modify this code under the
  * terms of the MIT license, which unfortunately won't be
@@ -13,11 +7,19 @@
  * this file. If not, visit : https://opensource.org/licenses/MIT
  */
 
-
 /*
 	This class could be defined in any other file, this file serves a pretty universal purpose
 	but I've decided just to add it for organizing purposes.
 */
+#pragma once
+#ifndef __EXCEPTION_H
+#define __EXCEPTION_H
+
+#include "logger.hpp"
+
+
+
+
 
 class Exception {
 
