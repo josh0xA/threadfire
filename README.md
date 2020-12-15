@@ -4,7 +4,6 @@ Program uses Thread Hijacking to Inject Native Shellcode into a Standard Win32 A
 ## About 
 I developed this small project to continue my experiences of different code injection methods and to allow RedTeam security professionals to utilize this method as a unique way to perform software penetration testing. With Thread hijacking, it allows the hijacker.exe program to susepend a thread within the target.exe program
 allowing us to write shellcode to that target thread, and later be executed (via; WriteProcessMemory(), SetThreadContext(), ResumeThread(), CreateThread()).
-[![Anurag's github stats](https://github-readme-stats.vercel.app/api?username=josh0xA)](https://github.com/anuraghazra/github-readme-stats)
 
 
 ### Example GIF (Credits To Endgame)
