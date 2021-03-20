@@ -17,10 +17,6 @@
 
 #include "logger.hpp"
 
-
-
-
-
 class Exception {
 
 private:
