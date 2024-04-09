@@ -1,5 +1,5 @@
 # ThreadBoat
-Program uses Thread Hijacking to Inject Native Shellcode into a Standard Win32 Application.
+Program uses Thread Hijacking to Inject Native Shellcode into a Standard Win32 Application. I was 15 years old when I made this - please ignore the substandard code. 
 
 ## About 
 I developed this small project to continue my experiences of different code injection methods and to allow RedTeam security professionals to utilize this method as a unique way to perform software penetration testing. With Thread hijacking, it allows the hijacker.exe program to susepend a thread within the target.exe program
