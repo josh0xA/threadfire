@@ -1,4 +1,4 @@
-# ThreadBoat
+# threadfire
 Program uses Thread Hijacking to Inject Native Shellcode into a Standard Win32 Application. I was 15 years old when I made this - please ignore the substandard code. 
 
 ## About 
